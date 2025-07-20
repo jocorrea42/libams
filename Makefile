@@ -17,13 +17,16 @@ TESTSRC = main.c
 TESTBIN = test
 TESTFLAGS = -no-pie
 
+
 all: $(NAME)
 
+
 $(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+	   ar rcs $(NAME) $(OBJS)
+
 
 bonus: $(OBJS) $(BONUS_OBJ)
-	ar rcs $(NAME) $(OBJS) $(BONUS_OBJ)
+	   ar rcs $(NAME) $(OBJS) $(BONUS_OBJ)
 
 %.o: %.s
 	$(NASM) $(NASMFLAGS) $< -o $@

@@ -1,11 +1,9 @@
-			section	.text
-			global	ft_list_remove_if
-			extern	free
+			
+global	ft_list_remove_if
+section	.text
+extern	free							; delete RDI, R8 and everything that RDX, RCX and free destroy
 
-; delete RDI, R8 and everything that RDX, RCX and free destroy
-
-ft_list_remove_if:						; rdi = t_list **begin, rsi = *data_ref
-										; rdx = int (*cmp)(data, data_ref), rcx = void (*free_fct)(data)
+ft_list_remove_if:						; rdi = t_list **begin, rsi = *data_ref, rdx = int (*cmp)(data, data_ref), rcx = void (*free_fct)(data)
 			push	rbp					; save rbp (tmp)
 			push	rbx					; save rbx (previous)
 			push	r12					; save r12 (first)
@@ -18,6 +16,7 @@ ft_list_remove_if:						; rdi = t_list **begin, rsi = *data_ref
 			cmp		rcx, 0
 			jz		return
 			jmp		compare_start
+
 free_elt:
 			mov		r8, [rdi]
 			mov		rbp, [r8 + 8]		; tmp = (*begin)->next
@@ -42,17 +41,21 @@ free_elt:
 			jnz		set_previous_next
 			mov		r12, rbp			; first == tmp
 			jmp		compare_start
+
 set_previous_next:
 			mov		[rbx + 8], rbp		; previous.next = tmp
 			jmp		compare_start
+
 compare_null:
 			xor		rdi, rsi
 			mov		rax, rdi
 			jmp		compare_end
+
 move_next:
 			mov		rbx, [rdi]
 			mov		r8,	[rbx + 8]		; tmp = (*begin)->next
 			mov		[rdi], r8			; *begin = tmp
+
 compare_start:
 			cmp		QWORD [rdi], 0		; *begin == NULL
 			jz		return
@@ -65,6 +68,7 @@ compare_start:
 			cmp		rdi, 0				; (*begin)->data == NULL
 			jz		compare_null
 			call	rdx					; (*cmp)((*begin)->data, data_ref)
+			
 compare_end:
 			pop		rcx
 			pop		rdx

@@ -7,8 +7,7 @@
 ; Retorna:
 ;   rax = número convertido (int)
 ; **************************************************************************** ;
-
-global ft_atoi_base  ; exporta la función
+global ft_atoi_base       ; exporta la función
 extern ft_strlen          ; función externa para calcular la longitud de cadena
 
 section .text
@@ -20,8 +19,7 @@ ft_atoi_base:
     je error
     xor r9, r9              ; r9 = contador de signos '-' encontrados, inicia en 0
 
-check_spaces:
-    ; Saltar todos los espacios en blanco (y otros caracteres whitespace) en la cadena str
+check_spaces:               ; Saltar todos los espacios en blanco (y otros caracteres whitespace) en la cadena str
     cmp byte [rdi], ' '     ; si *str == espacio
     je inc_space
     cmp byte [rdi], 9       ; tabulador
@@ -48,8 +46,7 @@ check_signs:
     je sign_found
     jmp setup_conversion    ; si no es signo, proceder a conversión
 
-sign_found:
-    ; Aquí procesamos un signo único
+sign_found:                 ; Aquí procesamos un signo único
     cmp r8b, '-'            ; si es '-'
     jne plus_sign           ; si no es '-', es '+', saltar a plus_sign
     inc r9                  ; contador de signos '-' incrementa (para detectar signo negativo)
@@ -67,20 +64,15 @@ setup_conversion:
     mov r10, rdi            ; guardar puntero actual de str (inicio del número real)
     mov rdi, rsi            ; pasar base en rdi para llamar a ft_strlen
     call ft_strlen          ; obtener longitud de base (rax)
-
     cmp rax, 2              ; la base debe tener al menos 2 caracteres
     jl error                ; si menos de 2, base inválida -> error
-
     mov rbx, -1             ; inicializar índice para iterar base en -1 para preincrementar
 
 check_base_chars:
     inc rbx                 ; incrementar índice base
     cmp byte [rsi + rbx], 0 ; si fin de cadena base -> ir a convert
     je convert
-
-    mov r8b, [rsi + rbx]    ; obtener carácter actual de la base
-
-    ; Comprobar caracteres prohibidos en la base (signos, espacios, tabs, etc.)
+    mov r8b, [rsi + rbx]    ; obtener carácter actual de la base, para comprobar caracteres prohibidos en la base (signos, espacios, tabs, etc.)
     cmp r8b, '+'
     je error
     cmp r8b, '-'
@@ -96,18 +88,14 @@ check_base_chars:
     cmp r8b, 13
     je error
     cmp r8b, ' '
-    je error
-
-    ; Comprobar que no haya caracteres duplicados en la base
+    je error                ; Comprobar que no haya caracteres duplicados en la base
     mov rcx, rbx            ; índice para buscar duplicados a partir del siguiente carácter
 check_duplicates:
     inc rcx
     cmp byte [rsi + rcx], 0 ; si fin de base -> no duplicados, continuar con siguiente char base
     je check_base_chars
-
     cmp r8b, byte [rsi + rcx] ; si se encontró duplicado -> error
     je error
-
     jmp check_duplicates    ; repetir hasta fin de base
 
 convert:
@@ -120,7 +108,6 @@ convert_loop:
     mov r8b, [r10 + rbx]    ; obtener carácter actual de str a convertir
     cmp r8b, 0              ; si fin de cadena str -> terminar conversión
     je finish
-
     xor rcx, rcx            ; índice para buscar carácter en base
 
 find_in_base:
@@ -139,7 +126,7 @@ add_value:
     jmp convert_loop
 
 finish:
-    test r9b, 1             ; si contador de signos '-' es impar (LSB == 1)
+    cmp r9b, 1             ; si contador de signos '-' es impar (LSB == 1)
     jz ret                  ; si par (o cero), número positivo, ir a retorno
     neg rax                 ; si impar, negar resultado para devolver negativo
 
