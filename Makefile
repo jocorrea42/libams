@@ -36,11 +36,17 @@ $(OBJ_DIR)/%.o: src/bonus/%.s | $(OBJ_DIR)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-test: all
-	$(CC) $(CFLAGS) tester/main.c $(WRAPPERS) $(NAME) -L. -lasm -o test
+# test: all
+# 	$(CC) $(CFLAGS) tester/main.c $(WRAPPERS) $(NAME) -L. -lasm -o test
 
-test_bonus: bonus
-	$(CC) $(CFLAGS) tester/main_bonus.c $(WRAPPERS_BONUS) -L. -lasm_bonus -lasm -o test_bonus
+# test_bonus: bonus
+# 	$(CC) $(CFLAGS) tester/main_bonus.c $(WRAPPERS_BONUS) -L. -lasm_bonus -lasm -o test_bonus
+
+# test_no_wrappers: all
+# 	$(CC) $(CFLAGS) tester/main_no_wrapper.c $(NAME) -L. -lasm -o test_no_wrappers
+
+# test_bonus_no_wrappers: bonus
+# 	$(CC) $(CFLAGS) tester/main_bonus_no_wrappers.c $(BONUS_NAME) -L. -lasm_bonus -lasm -o test_bonus_no_wrappers
 
 clean:
 	rm -f $(OBJ_DIR)/*.o

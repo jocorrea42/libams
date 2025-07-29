@@ -1,6 +1,7 @@
 global ft_list_push_front
 extern malloc
-
+;GOT(Global Offset Table) es una estructura usada en programas ELF (como en Linux) 
+;permite que el código pueda acceder a funciones y variables globales ubicadas en direcciones desconocidas en tiempo de compilación. 
 section .text
 
 ft_list_push_front:
@@ -9,8 +10,8 @@ ft_list_push_front:
 	push rsi
 	push rdi
 	sub rsp, 8              ; alineación para call
-	mov rdi, 16             ; malloc(sizeof(t_list))
-	call [rel malloc wrt ..got]
+	mov rdi, 16               ; malloc(sizeof(t_list)) → 16 bytes (8 bytes para `data`, 8 para `next`)
+    call [rel malloc wrt ..got] ; Llamada a malloc de forma PIE-safe a través de la GOT al no poder compilar el main con -no-pie
 	add rsp, 8
 	cmp rax, 0
 	je cleanup
